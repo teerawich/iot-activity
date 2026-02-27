@@ -19,7 +19,7 @@ pub struct Activity {
     pub device_id: Uuid,
     pub activity_type: String,
     pub payload: serde_json::Value,
-    pub created_at: DateTime<Utc>
+    pub created_at: DateTime<Utc>,
 }
 
 pub struct BatchActivityResponse {
@@ -40,7 +40,7 @@ mod tests {
         };
 
         assert!(activity.validate().is_err());
-    } 
+    }
 
     #[test]
     fn test_activity_type_too_long() {
@@ -51,6 +51,9 @@ mod tests {
             payload: serde_json::json!({}),
         };
 
-        assert!(activity.validate().is_err(), "Should be error because activity_type exceed lenght (50 Characters)");
+        assert!(
+            activity.validate().is_err(),
+            "Should be error because activity_type exceed lenght (50 Characters)"
+        );
     }
 }

@@ -4,12 +4,8 @@ pub mod middleware;
 pub mod models;
 pub mod repositories;
 
+use axum::{Router, middleware as axum_middleware, routing::post};
 use repositories::Database;
-use axum::{
-    routing::post,
-    middleware as axum_middleware,
-    Router,
-};
 
 #[derive(Clone)]
 pub struct AppState {
@@ -18,7 +14,10 @@ pub struct AppState {
 
 pub fn create_router(state: AppState) -> Router {
     Router::new()
-        .route("/activities", post(handlers::activity::record_batch_activities))
+        .route(
+            "/activities",
+            post(handlers::activity::record_batch_activities),
+        )
         .layer(axum_middleware::from_fn_with_state(
             state.clone(),
             middleware::auth_middleware,

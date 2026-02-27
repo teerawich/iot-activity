@@ -1,11 +1,11 @@
+use crate::AppState;
+use crate::errors::AppError;
 use axum::{
     extract::{Request, State},
+    http::HeaderMap,
     middleware::Next,
     response::Response,
-    http::HeaderMap
 };
-use crate::errors::AppError;
-use crate::AppState;
 
 pub async fn auth_middleware(
     State(state): State<AppState>,
@@ -14,10 +14,10 @@ pub async fn auth_middleware(
     next: Next,
 ) -> Result<Response, AppError> {
     let api_key = headers
-                .get("x-api-key")
-                .and_then(|value| value.to_str().ok())
-                .ok_or(AppError::Unauthorized)?;
-    
+        .get("x-api-key")
+        .and_then(|value| value.to_str().ok())
+        .ok_or(AppError::Unauthorized)?;
+
     let device_exists = sqlx::query!(
         "SELECT id FROM devices WHERE api_key_hash = $1 LIMIT 1",
         api_key

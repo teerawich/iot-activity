@@ -1,7 +1,7 @@
 use axum::{
+    Json,
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json
 };
 use serde_json::json;
 use thiserror::Error;
@@ -10,7 +10,7 @@ use tracing;
 #[derive(Error, Debug)]
 pub enum AppError {
     #[error("Database error: {0}")]
-    Database(#[from] sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 
     #[error("Invalid API Key")]
     Unauthorized,
@@ -25,7 +25,7 @@ pub enum AppError {
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            Self::Database(ref e) => {
+            Self::DatabaseError(ref e) => {
                 tracing::error!("DB Error: {:?}", e);
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }

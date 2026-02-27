@@ -8,7 +8,7 @@ pub struct Database {
 
 impl Database {
     pub fn new(writer: PgPool, reader: PgPool) -> Self {
-        Self {writer, reader}
+        Self { writer, reader }
     }
 
     pub fn reader(&self) -> &PgPool {
